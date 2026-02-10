@@ -115,23 +115,28 @@ def create_project_timeline(lab_member_list, start_date, end_date):
 
     project_timeline_data_list = pd.DataFrame(project_timeline_data_list)
 
-    project_timeline_figure = px.timeline(project_timeline_data_list, x_start='Start Date', x_end="End Date", y='Row',
-                                              text='Project', color="Status", color_discrete_map=color_map, custom_data=[project_timeline_data_list['Start Date'].apply(lambda x: x.strftime("%B %d, %Y")), project_timeline_data_list['End Date'].apply(lambda x: x.strftime("%B %d, %Y")), project_timeline_data_list['PM'], project_timeline_data_list['Status']])
+    if project_timeline_data_list.empty is False:
 
-    project_timeline_figure.update_traces(width=0.09, marker=dict(cornerradius=30), insidetextanchor="middle", insidetextfont=dict(weight="bold"),
-        hovertemplate="<b>Project: %{text}<br>PM: %{customdata[2]}<br>Status: %{customdata[3]}<br>Start Date: %{customdata[0]}<br>Stop Date: %{customdata[1]}<extra></extra>"
-    )
-    project_timeline_figure.update_yaxes(tickvals=tickvals, ticktext=ticktext)
+           project_timeline_figure = px.timeline(project_timeline_data_list, x_start='Start', x_end="Finish", y='Row',
+                                                 text='Project', color="Status", color_discrete_map=color_map, custom_data=[project_timeline_data_list['Start'].apply(lambda x: x.strftime("%B %d, %Y")), project_timeline_data_list['Finish'].apply(lambda x: x.strftime("%B %d, %Y")), project_timeline_data_list['Task'], project_timeline_data_list['Status']])
+       
+           project_timeline_figure.update_traces(width=0.09, marker=dict(cornerradius=30), insidetextanchor="middle", insidetextfont=dict(weight="bold"),
+               hovertemplate="<b>Project: %{text}<br>PM: %{customdata[2]}<br>Status: %{customdata[3]}<br>Start Date: %{customdata[0]}<br>Stop Date: %{customdata[1]}<extra></extra>"
+           )
+           project_timeline_figure.update_yaxes(tickvals=tickvals, ticktext=ticktext)
+       
+           project_timeline_figure.update_layout(plot_bgcolor='white', title=dict(text="Personnel Timeline", font=dict(size=25, weight='bold'), xanchor="left", x=0.44), margin={'t':50,'b':0,'r':0,'l':0}, xaxis_title='', yaxis_title='', showlegend=False, xaxis={'tickfont': dict(size=16), 'range': [date(date.today().year,1,1), date(date.today().year+1, 1, 1),]}, yaxis={'fixedrange': True, 'tickfont':dict(size=16), 'range': [-0.1, project_timeline_data_list.iloc[-1]['Row'] + 0.1]})
+       
+           project_timeline_figure.add_trace(go.Scatter(
+               x=[datetime.date.today(), datetime.date.today(), datetime.date.today() + datetime.timedelta(days=1),
+                  datetime.date.today() + datetime.timedelta(days=1)],
+               y=[-0.1, project_timeline_data_list.iloc[-1]['Row'] + 0.1, project_timeline_data_list.iloc[-1]['Row'] + 0.1, -0.1],
+               name='<b>Current Date</b>', showlegend=False,
+               visible=True, fill="toself",
+               mode='text', fillcolor='blue', opacity=0.3, hoverinfo='text'))
 
-    project_timeline_figure.update_layout(plot_bgcolor='white', title=dict(text="Personnel Timeline", font=dict(size=25, weight='bold'), xanchor="left", x=0.44), margin={'t':50,'b':0,'r':0,'l':0}, xaxis_title='', yaxis_title='', showlegend=False, xaxis={'tickfont': dict(size=16), 'range': [date(date.today().year,1,1), date(date.today().year+1, 1, 1),]}, yaxis={'fixedrange': True, 'tickfont':dict(size=16), 'range': [-0.1, project_timeline_data_list.iloc[-1]['Row'] + 0.1]})
-
-    project_timeline_figure.add_trace(go.Scatter(
-        x=[datetime.date.today(), datetime.date.today(), datetime.date.today() + datetime.timedelta(days=1),
-           datetime.date.today() + datetime.timedelta(days=1)],
-        y=[-0.1, project_timeline_data_list.iloc[-1]['Row'] + 0.1, project_timeline_data_list.iloc[-1]['Row'] + 0.1, -0.1],
-        name='<b>Current Date</b>', showlegend=False,
-        visible=True, fill="toself",
-        mode='text', fillcolor='blue', opacity=0.3, hoverinfo='text'))
+    else:
+       project_timeline_figure = no_plot()
 
     return project_timeline_figure
 
@@ -948,5 +953,6 @@ def serve_layout():
 
 
     return layout
+
 
 
