@@ -28,6 +28,16 @@ color_map = {
         "upcoming": "blue"
     }
 
+def no_plot():
+    figure = go.Figure()
+    figure.add_annotation(text='No plot to show', x=0.5, y=0.5, xref='paper', yref='paper',
+                                           showarrow=False, font={'size': 22, 'weight': 'bold'})
+    figure.update_xaxes(visible=False)
+    figure.update_yaxes(visible=False)
+    figure.update_layout(template='plotly_white')
+
+    return figure
+
 def read_database(table):
     connection.ping(reconnect=True)
     cursor = connection.cursor()
@@ -953,6 +963,7 @@ def serve_layout():
 
 
     return layout
+
 
 
 
