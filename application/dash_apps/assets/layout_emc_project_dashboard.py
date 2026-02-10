@@ -115,8 +115,8 @@ def create_project_timeline(lab_member_list, start_date, end_date):
 
     project_timeline_data_list = pd.DataFrame(project_timeline_data_list)
 
-    project_timeline_figure = px.timeline(project_timeline_data_list, x_start='Start', x_end="Finish", y='Row',
-                                          text='Project', color="Status", color_discrete_map=color_map, custom_data=[project_timeline_data_list['Start'].apply(lambda x: x.strftime("%B %d, %Y")), project_timeline_data_list['Finish'].apply(lambda x: x.strftime("%B %d, %Y")), project_timeline_data_list['Task'], project_timeline_data_list['Status']])
+    project_timeline_figure = px.timeline(project_timeline_data_list, x_start='Start Date', x_end="End Date", y='Row',
+                                              text='Project', color="Status", color_discrete_map=color_map, custom_data=[project_timeline_data_list['Start Date'].apply(lambda x: x.strftime("%B %d, %Y")), project_timeline_data_list['End Date'].apply(lambda x: x.strftime("%B %d, %Y")), project_timeline_data_list['PM'], project_timeline_data_list['Status']])
 
     project_timeline_figure.update_traces(width=0.09, marker=dict(cornerradius=30), insidetextanchor="middle", insidetextfont=dict(weight="bold"),
         hovertemplate="<b>Project: %{text}<br>PM: %{customdata[2]}<br>Status: %{customdata[3]}<br>Start Date: %{customdata[0]}<br>Stop Date: %{customdata[1]}<extra></extra>"
@@ -948,4 +948,5 @@ def serve_layout():
 
 
     return layout
+
 
